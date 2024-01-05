@@ -1,17 +1,28 @@
 function cardCheck(){
+    if(pot() != 0){
+        console.log("It isn't preflop");
+        return null;
+    }
     var cardDivs = document.querySelectorAll('.card');
     const cards = [];
-    for (var i = cardDivs.length - 4; i < cardDivs.length-2; i++) {
-        var cardDiv = cardDivs[i];
-        var valueSpan = cardDiv.querySelector('.value');
-        var suitSpan = cardDiv.querySelector('.suit');
-        if (valueSpan) {
-            cards.push(valueSpan.textContent + suitSpan.textContent);
-        } else {
-            console.log("Value span not found in a card div");
+    if(cardDivs){
+        for (var i = 0; i < cardDivs.length; i++) {
+            var cardDiv = cardDivs[i];
+            if(cardDiv){
+                var valueSpan = cardDiv.querySelector('.value');
+                var suitSpan = cardDiv.querySelector('.suit');
+                if (valueSpan) {
+                    cards.push(valueSpan.textContent + suitSpan.textContent);
+                } else {
+                    console.log("Value span not found in a card div");
+                }
+            }
         }
+        return cards
     }
-    return cards
+    else{
+        console.log("Cards not found");
+    }
 }
 
 function fold(){
@@ -30,6 +41,7 @@ function fold(){
         return false;
     }
 }
+
 function checkFold(){
     var highlightedbutton = document.querySelector('.button-1.with-tip.check-fold.suspended-action.highlighted');
     if(highlightedbutton){
@@ -90,30 +102,55 @@ function generateFolds(){
     return hands
 }
 
-//button-1 with-tip check-fold suspended-action 
+function tester(){
+    console.log("Okeh");
+}
 
-const sleepNow = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+function sleep(ms, callback) {
+    setTimeout(callback, ms);
+  }
 
-const badHands = generateFolds();
-var timer = 1000;
-var curhand = cardCheck();
-for(let i = 0; i < 100000; i++){
-    await sleepNow(timer);
-    curhand = cardCheck();
-    if(!check()){
-        for (let j = 0; j < badHands.length; j++){
-            console.log(cardCheck())
-            if(curhand.sort().join(',')=== badHands[j].sort().join(',')){
-                if(!checkFold()){
-                    fold();
+function pot(){
+    var potSize = document.querySelector(".table-pot-size");
+    if(potSize){
+        return parseInt(potSize.querySelector('.normal-value').textContent);
+    }
+    else{
+        console.log("pot size not found :(");
+        return -1;
+    }
+}
+
+function main(){
+    var flag = true;
+    // Checks to make sure we are preflop
+    if(pot() === 0){
+        const badHands = generateFolds();
+        var curhand = cardCheck();
+        if(!check()){
+            for (let j = 0; j < badHands.length; j++){
+                console.log(cardCheck())
+                if(curhand.sort().join(',')=== badHands[j].sort().join(',')){
+                    flag = false;
+                    if(!checkFold()){
+                        fold();
+                    }
                 }
-                else{
-                    await sleepNow(1000);
-                }
+            }
+            if(flag){
+                console.log("Hand is playable");
             }
         }
     }
-    else{
-        await sleepNow(1000);
-    }
 }
+
+const el = document.getElementById("Trash");
+if (el){
+  el.addEventListener("click", main);
+}
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.action === "Trash") {
+      main();
+    }
+  });

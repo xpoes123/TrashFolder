@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Trash Folder",
+  "version": "1.0",
+  "description": "Founds bad preflop hands.",
+  "icons": {
+    "128": "playing_cards.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "activeTab", "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

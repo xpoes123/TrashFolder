@@ -1,0 +1,22 @@
+body { 
+    margin: 5px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+main{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+button {
+    color: #ffffff;
+    background-color: #c8872d;
+    font-size: 19px;
+    border: 1px solid #2d63c8;
+    padding: 15px 50px;
+    cursor: pointer
+}
+button:hover {
+    color: #c82d2d;
+    background-color: #ffffff;
+}
